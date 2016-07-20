@@ -1,12 +1,13 @@
 package com.cloudera.sa.spark.cardgenerator
 
+import java.util.Random
+
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.Row
 import org.apache.spark.sql.hive.HiveContext
 import org.apache.spark.{SparkConf, SparkContext}
 
 import scala.collection.mutable
-import scala.util.Random.nextInt
 
 
 object CardDataGenerator {
@@ -72,8 +73,9 @@ object CardDataGenerator {
     val accountRDD = partitions.flatMap(r => {
       val mutableList = new mutable.MutableList[Row]
       val loops = numOfAccounts / numOfPartitionWriters
+      val random = new Random()
       for (i <- 0 until loops) {
-        mutableList += Row(i.toLong + r.toLong * loops, haiku, haiku, nextInt(120))
+        mutableList += Row(i.toLong + r.toLong * loops, haiku(random), haiku(random), random.nextInt(120))
       }
       mutableList.toSeq
     })
@@ -96,8 +98,9 @@ object CardDataGenerator {
     val accountRDD = partitions.flatMap(r => {
       val mutableList = new mutable.MutableList[Row]
       val loops = numOfCards / numOfPartitionWriters
+      val random = new Random()
       for (i <- 0 until loops) {
-        mutableList += Row(i.toLong + r.toLong * loops, nextInt(numOfAccounts).toLong, 2000 + nextInt(20), nextInt(12))
+        mutableList += Row(i.toLong + r.toLong * loops, random.nextInt(numOfAccounts).toLong, 2000 + random.nextInt(20), random.nextInt(12))
       }
       mutableList.toSeq
     })
@@ -122,10 +125,10 @@ object CardDataGenerator {
       val loops = numOfTrans / numOfPartitionWriters
 
       val now = System.currentTimeMillis()
-
+      val random = new Random()
       for (i <- 0 until loops) {
 
-        mutableList += Row(i.toLong + r.toLong * loops, nextInt(numOfCards).toLong, now + i * 60000l + nextInt(1000), nextInt(1000), nextInt(100000).toLong)
+        mutableList += Row(i.toLong + r.toLong * loops, random.nextInt(numOfCards).toLong, now + i * 60000l + random.nextInt(1000), random.nextInt(1000), random.nextInt(100000).toLong)
       }
       mutableList.toSeq
     })
@@ -155,14 +158,14 @@ object CardDataGenerator {
     "sequoia", "cedar", "wrath", "blessing", "spirit", "nova", "storm", "burst",
     "giant", "elemental", "throne", "game", "weed", "stone", "apogee", "bang")
 
-  def getRandElt[A](xs: List[A]): A = xs.apply(nextInt(xs.size))
+  def getRandElt[A](xs: List[A], random:Random): A = xs.apply(random.nextInt(xs.size))
 
-  def getRandNumber(ra: Range): String = {
-    (ra.head + nextInt(ra.end - ra.head)).toString
+  def getRandNumber(ra: Range, random:Random): String = {
+    (ra.head + random.nextInt(ra.end - ra.head)).toString
   }
 
-  def haiku: String = {
-    val xs = getRandNumber(1000 to 9999) :: List(nouns, adjs).map(getRandElt)
+  def haiku(random: Random): String = {
+    val xs = getRandNumber(1000 to 9999, random) :: List(nouns, adjs).map(l => getRandElt(l, random))
     xs.reverse.mkString("-")
   }
 }
