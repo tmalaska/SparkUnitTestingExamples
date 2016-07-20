@@ -70,9 +70,9 @@ object CardDataNester {
       val account = r._2._1
       Row(
         account.getLong(account.fieldIndex("account_id")),
-        account.getLong(account.fieldIndex("first_name")),
-        account.getLong(account.fieldIndex("last_name")),
-        account.getLong(account.fieldIndex("age")),
+        account.getString(account.fieldIndex("first_name")),
+        account.getString(account.fieldIndex("last_name")),
+        account.getInt(account.fieldIndex("age")),
         r._2._2.toSeq
       )
     })
@@ -86,14 +86,14 @@ object CardDataNester {
       "   card_id: BIGINT," +
       "   exp_year: INT," +
       "   exp_month: INT," +
-      "   tran ARRAY<STRUCT<" +
+      "   tran: ARRAY<STRUCT<" +
       "     tran_id: BIGINT," +
       "     time_stamp: BIGINT," +
       "     amount: INT," +
       "     merchant_id: BIGINT" +
       "   >>" +
       " >>" +
-      ") store as parquet")
+      ") stored as parquet")
 
     val emptyNestedDf = hc.sql("select * from " + nestedTableName + " limit 0")
 
