@@ -91,6 +91,6 @@ object MakingNestedTableTest   extends FunSuite with
     nestedDF.registerTempTable("nestedTmp")
     hiveContext.sql("insert into nested select * from nestedTmp")
 
-    
+
   }
 }
