@@ -72,7 +72,7 @@ object CardDataGenerator {
     val accountRDD = partitions.flatMap(r => {
       val mutableList = new mutable.MutableList[Row]
       val loops = numOfAccounts / numOfPartitionWriters
-      for (i <- 1 to loops) {
+      for (i <- 0 until loops) {
         mutableList += Row(i.toLong + r.toLong * loops, haiku, haiku, nextInt(120))
       }
       mutableList.toSeq
@@ -96,7 +96,7 @@ object CardDataGenerator {
     val accountRDD = partitions.flatMap(r => {
       val mutableList = new mutable.MutableList[Row]
       val loops = numOfCards / numOfPartitionWriters
-      for (i <- 1 to loops) {
+      for (i <- 0 until loops) {
         mutableList += Row(i.toLong + r.toLong * loops, nextInt(numOfAccounts).toLong, 2000 + nextInt(20), nextInt(12))
       }
       mutableList.toSeq
@@ -123,7 +123,7 @@ object CardDataGenerator {
 
       val now = System.currentTimeMillis()
 
-      for (i <- 1 to loops) {
+      for (i <- 0 until loops) {
 
         mutableList += Row(i.toLong + r.toLong * loops, nextInt(numOfCards).toLong, now + i * 60000l + nextInt(1000), nextInt(1000), nextInt(100000).toLong)
       }
