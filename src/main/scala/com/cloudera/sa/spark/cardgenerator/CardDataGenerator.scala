@@ -73,7 +73,7 @@ object CardDataGenerator {
       val mutableList = new mutable.MutableList[Row]
       val loops = numOfAccounts / numOfPartitionWriters
       for (i <- 1 to loops) {
-        mutableList += Row(i.toLong * r.toLong, haiku, haiku, nextInt(120))
+        mutableList += Row(i.toLong + r.toLong * loops, haiku, haiku, nextInt(120))
       }
       mutableList.toSeq
     })
@@ -97,7 +97,7 @@ object CardDataGenerator {
       val mutableList = new mutable.MutableList[Row]
       val loops = numOfCards / numOfPartitionWriters
       for (i <- 1 to loops) {
-        mutableList += Row(i.toLong * r.toLong, nextInt(numOfAccounts).toLong, 2000 + nextInt(20), nextInt(12))
+        mutableList += Row(i.toLong + r.toLong * loops, nextInt(numOfAccounts).toLong, 2000 + nextInt(20), nextInt(12))
       }
       mutableList.toSeq
     })
@@ -125,7 +125,7 @@ object CardDataGenerator {
 
       for (i <- 1 to loops) {
 
-        mutableList += Row(i.toLong * r.toLong, nextInt(numOfCards).toLong, now + i * 60000l + nextInt(1000), nextInt(1000), nextInt(100000).toLong)
+        mutableList += Row(i.toLong + r.toLong * loops, nextInt(numOfCards).toLong, now + i * 60000l + nextInt(1000), nextInt(1000), nextInt(100000).toLong)
       }
       mutableList.toSeq
     })
